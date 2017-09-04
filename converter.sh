@@ -1,6 +1,30 @@
+#!/usr/bin/env bash
+
+# PARAMETERS
+###################
+
+# > The path of the dir above the original ModelNet 'off' Dataset
+# > The 'pcd' dataset will be created in the same dir
+ROOT_PATH="/root/path/for/both/datasets/";
+
+# > Path where the converter (off2pcd) is
+PATH_TO_CONVERTER="/path/to/converter/"
+
+# > Max number of parallel jobs during the process 
+let "MAX_PAR_JOBS=10";
+
+# > The size of the step between each sampled point
+STEP_SIZE="0.05"
+
+###################
+
+# CONSTANTS
+###################
+
+# > Output extension - there is no need to change it
 EXTENSION="pcd";
-ROOT_PATH="/media/braile/HDD/Workspace/Datasets/";
-let "MAX_PARALLEL_CLASSES=10";
+
+###################
 
 parse_train()
 {
@@ -9,7 +33,7 @@ parse_train()
   # Converts the files
   for OBJ_FILE in $( ls *.off ); do
     OBJ_NAME=${OBJ_FILE%.*};
-    ~/Desktop/off2pcd -p "${OBJ_NAME}.off" -f -s 0.05 -o $TRAIN_PATH/${OBJ_NAME}.${EXTENSION}
+    ${PATH_TO_CONVERTER}off2pcd -p "${OBJ_NAME}.off" -f -s ${STEP_SIZE} -o $TRAIN_PATH/${OBJ_NAME}.${EXTENSION}
     echo "Storing at ${TRAIN_PATH}${OBJ_NAME}.${EXTENSION}" ;
     rm -rf "${OBJ_NAME}.${EXTENSION}";
   done
@@ -23,7 +47,7 @@ parse_test()
   # Converts the files
   for OBJ_FILE in $( ls *.off ); do
     OBJ_NAME=${OBJ_FILE%.*};
-    ~/Desktop/off2pcd -p "${OBJ_NAME}.off" -f -s 0.05 -o $TEST_PATH/${OBJ_NAME}.${EXTENSION}
+    ${PATH_TO_CONVERTER}off2pcd -p "${OBJ_NAME}.off" -f -s ${STEP_SIZE} -o $TEST_PATH/${OBJ_NAME}.${EXTENSION}
     rm -rf "${OBJ_NAME}.${EXTENSION}";
   done
   cd .. ;
@@ -61,7 +85,7 @@ wait_max_jobs()
   do
     let "JOBS_COUNT+=1";
   done
-  while [ "$JOBS_COUNT" -ge "$MAX_PARALLEL_CLASSES" ]
+  while [ "$JOBS_COUNT" -ge "$MAX_PAR_JOBS" ]
   do
     # . Count the number of jobs
     let "JOBS_COUNT=0";
@@ -72,6 +96,9 @@ wait_max_jobs()
     done
   done
 }
+
+# MAIN FLOW
+###################
 
 cd $ROOT_PATH &&
 mkdir ModelNet10${EXTENSION} &&
@@ -84,3 +111,5 @@ done
 wait ;
 
 echo "> Done!";
+
+###################
