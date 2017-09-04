@@ -1,7 +1,7 @@
 # ModelNet2PCD
 
 ## About
-This script runs a program that creates a new `pcd` for each object from the [Princeton ModelNet 3D object dataset](http://modelnet.cs.princeton.edu/), with points sampled over each polygon surface for each object.
+This script automatizes the conversion from `off` to `pcd` objects from the [Princeton ModelNet 3D object dataset](http://modelnet.cs.princeton.edu/), with points sampled over each polygon surface for each object.
 
 ## How to use
 Simply edit the parameters at the script `converter.sh` and run `bash converter.sh`. Also, you will need to use the binary file _off2pcd_ [(repository here)](https://github.com/cabraile/off2pcd). The original dataset file tree structure must be `<DIR_NAME>/<CLASS_NAME>/<train|test>/<file.off>`.
